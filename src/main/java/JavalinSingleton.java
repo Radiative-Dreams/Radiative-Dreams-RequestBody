@@ -13,17 +13,22 @@ public class JavalinSingleton {
     public static Javalin getInstance(){
         Javalin app = Javalin.create();
         ObjectMapper om = new ObjectMapper();
-        
+        // java does not understand json, so we convert it to the objectmapper object
+        // om.readvalue makes json to java objects
+        // om.writevalueasstring makes java objects to json
+
         /**
          * problem1: retrieve the song object from the request body...
          *      1. return the song object as JSON in the response body.
          * 
          * Note: Please refer to the "RequestBody.MD" file for more assistance.
          */
+        // ctx is the value recived from it
         app.post("/echo", ctx -> {
-            
-            //implement logic here
-                
+            String jsonString = ctx.body();
+            Song song = om.readValue(jsonString, Song.class);
+
+            ctx.json(song);
         });
 
         /**
@@ -34,9 +39,12 @@ public class JavalinSingleton {
          * Note: Please refer to the "RequestBody.MD" file for more assistance.
          */
         app.post("/changeartisttobeatles", ctx -> {
+            String jsonString = ctx.body();
+            
+            Song song = om.readValue(jsonString, Song.class);
 
-            //implement logic here
-               
+            song.setArtistName("Beatles");
+            ctx.json(song);
         });
 
 
